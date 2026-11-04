@@ -1,0 +1,72 @@
+input_dir: ./data/scene1/put_fork1_to_bowl1
+output_dir: ./output_data/scene1/put_fork1_to_bowl1/recording_output_processed
+output_policy_replay_buffer_zarr: ./output_data/scene1/put_fork1_to_bowl1/recording_output_processed/recording_output.zarr.zip # Path to output policy replay buffer
+stages: # List of stage names to run. If null then rull all stages (see process_demos.py for stage names)
+  - sync_cameras
+  - detect
+  - calibrate
+  - visualize
+  - gen_replay_buffer # Generate replay buffer from processed data
+skip_stages: [] # Stages to skip (removes entries from `stages`)
+overwrite: True # If demonstration already exists in output directory, overwrite it
+
+sync_cameras:
+  camera_latency: 0.1849
+  tracking_latency: 0.183
+  # End-effector to camera transformation matrix (4x4 homogeneous transform)
+  T_ee_cam:
+    # iphone 16 pro max
+    # - [0.258455, 0.0, -0.966023, 0.063170801]
+    # - [0.0, 1.0, 0.0, 0.057004223]
+    # - [0.966023, 0.0, 0.258455, 0.120893065]
+    # - [0.0, 0.0, 0.0, 1.0]
+    # iphone 15 pro
+    - [0.258455, 0.000000, -0.966023, 0.052071601]
+    - [-0.000000, 1.000000, 0.000000, 0.059058619]
+    - [0.966023, -0.000000, 0.258455, 0.114675920]
+    - [0.000000, 0.000000, 0.000000, 1.000000]
+
+detect:
+  overwrite: ${..overwrite}
+  aruco_config: "demonstration_processing/calibration/aruco_config.yaml"
+  oak_intrinsics: "demonstration_processing/calibration/gopro_intrinsics_2_7k.json"
+  iphone_calibration: "demonstration_processing/calibration/iphone15pro_calibration.yaml"
+  num_workers: null # Number of workers to use for detection. If null, then matches CPU count
+  ar_detection_vis_dir: "aruco_detection_vis" # Directory to save aruco detection visualizations, relative to <PATH_TO_FLYINGUMI>
+  visualize: False # Whether to visualize the aruco detection results and save them to <PATH_TO_FLYINGUMI>/<ar_detection_vis_dir>
+
+calibrate:
+  overwrite: ${..overwrite}
+  tag_det_threshold: 0.2
+
+visualize:
+  overwrite: ${..overwrite}
+  depth_max_distance: 0.5 # Maximum distance for depth visualization; crop everything beyond this distance
+  downsample: 6 # Downsample factor for the video frames; 1 means no downsampling
+  fps: 10 # Frames per second for the output video
+  max_frames: -1 # Maximum number of frames to visualize; -1 means all frames
+  video_out_dir: "./test/processed_data_vis" # Directory to save the visualizations, relative to <PATH_TO_FLYINGUMI>
+  offscreen: False # macOS does not support Open3D EGL headless; set False to use on-screen renderer
+  # Clarity controls
+  world_align: True           # Align poses so first pose becomes identity (origin)
+  include_base_frame: True    # Draw world axes at origin
+  include_grid: False         # Draw XY ground grid for spatial reference
+  fix_camera: False           # Use dynamic per-frame auto-fit camera by default
+  camera_mode: isometric      # isometric | top | side
+  axis_size: 0.08             # Size of rendered coordinate axes
+  grid_step: null             # Grid spacing (meters). Null => auto based on trajectory extent
+
+  # visulization output folder structure:
+  # <PATH_TO_FLYINGUMI>/
+  # └── processed_data_vis/         # (= video_out_dir)
+  #     └── <DEMO_SESSION>/          
+  #         └── {episode_idx}_processed_vis.mp4
+
+# don't log hydra job
+defaults:
+  - override hydra/job_logging: disabled
+
+hydra:
+  output_subdir: null
+  run:
+    dir: .

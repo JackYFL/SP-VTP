@@ -1,0 +1,80 @@
+# Training config for spvtp.vision_traj
+# Override on CLI: python -m spvtp.vision_traj.train data.root=/path train.batch_size=16
+
+data:
+  root: spvtp/EgoSPT
+  annotations_json: annotations_merged.json
+  val_ratio: 0.1
+  split_seed: 42            # fixed data split; independent of train.seed
+  stride: 3                 # 30fps -> 10fps
+  image_size: 224
+  prompt_form: vision_bbox_and_bbox # bbox | point | none | vision_bbox | vision_bbox_and_bbox |
+                            # object_only | target_only
+  frame_cache_root: null    # optional predecoded 224x224 frame arrays
+  sample_start_step: null   # null follows history_horizon; set 4 to keep paired windows
+  num_workers: 4
+  scenes: null              # null = use all scenes; otherwise e.g. [scene1] or
+                            # [scene1, scene2] to restrict the dataset.
+
+policy:
+  action_dim: 10            # dpos(3) + rot6d(6) + gripper(1)
+  action_horizon: 16
+  history_horizon: 4
+  use_task_input: true      # false removes all first-frame/task tokens
+  embed_dim: 768
+  vision_encoder:
+    type: timm               # currently supported: timm
+    model_name: vit_base_patch14_dinov2
+    pretrained: true
+    freeze: true
+    img_size: 224
+  observation_encoder: null  # null shares task DINO; pi05_siglip uses a VLA visual tower
+  fusion_layers: 4
+  fusion_heads: 12
+  task_fusion_type: cross_attention      # self_attention | cross_attention
+  task_return_image_summary: true        # cross_attention: return [image summary, prompt tokens]
+  head_layers: 6
+  head_heads: 12
+  head_type: flow_matching      # diffusion | flow_matching
+  num_train_timesteps: 100  # diffusion only
+  num_inference_steps: 10   # diffusion: DDIM steps, flow: Euler steps
+  prediction_type: epsilon  # diffusion only: epsilon | sample
+  flow_time_sampling: beta  # flow matching: uniform | beta
+  flow_beta_alpha: 1.5
+  flow_beta_beta: 1.0
+  flow_time_min_period: 0.004  # OpenPI-style sin/cos time embedding
+  flow_time_max_period: 4.0
+
+train:
+  batch_size: 16            # per-process batch size (scale down for DDP)
+  lr: 2.0e-4
+  weight_decay: 1.0e-4
+  num_epochs: 30
+  log_every: 50
+  val_every_epochs: 2
+  val_max_batches: 64
+  save_every_epochs: 10
+  run_final_eval: true       # false only for throughput/debug runs
+  output_dir: runs/vision_traj_default
+  seed: 42
+  mixed_precision: bf16     # 'no' | 'fp16' | 'bf16' (handled by accelerate)
+  grad_accum_steps: 8       # 16 x 8 = global batch 128 on one process
+  device: auto             # auto | cpu
+  resume: null
+  max_steps: null          # optional smoke/throughput limit
+  stats_samples: 256
+  scheduler:
+    name: cosine            # constant | constant_with_warmup | linear |
+                            # cosine | cosine_with_restarts | polynomial
+    warmup_ratio: 0.05      # fraction of total optimizer steps spent warming up
+                            # (ignored if warmup_steps > 0)
+    warmup_steps: 0         # absolute warmup steps; overrides warmup_ratio if > 0
+    num_cycles: 0.5         # only used by cosine / cosine_with_restarts
+                            # 0.5 = half-cosine (default), 1.0 = full cosine down-up
+  wandb:
+    enabled: false
+    project: sp-vtp
+    run_name: null
+    entity: null
+    tags: []
+    num_images: 1           # first frames with prompt overlays per eval

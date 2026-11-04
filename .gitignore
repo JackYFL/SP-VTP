@@ -1,0 +1,50 @@
+# Python, build output, and local environments
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Dataset directories, not the spvtp/vision_traj/data source package
+/data/
+EgoSPT/
+recordings/
+recording_output*/
+frame_cache*/
+*.zarr/
+*.zarr.zip
+annotations_merged.json
+
+# Experiment artifacts and model weights
+runs/
+wandb/
+outputs/
+checkpoints/
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.onnx
+*.zip
+*.mp4
+*.m4v
+*.mov
+*.avi
+
+# Secrets and machine-local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.ssh/
+.aws/
+.codex/
+.agents/
+.DS_Store
+*.log
