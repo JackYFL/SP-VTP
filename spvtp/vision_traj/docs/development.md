@@ -6,9 +6,11 @@ The public package and module entry point are `spvtp` / `python -m spvtp`.
 Refresh an existing installation with `uv pip install -e .` after renaming.
 Historical `runs/` records and external data paths are preserved verbatim;
 their old path strings are not active package imports.
-Flat module aliases remain within `spvtp`; no legacy root-package shim is
-provided. State-dict checkpoints still load; override `--data-root` or
-`data.root` if a saved data path points at a relocated directory.
+The 28 flat compatibility modules in `vision_traj/` have been removed. Only
+`__init__.py` (public exports) and `runtime.py` (shared runtime helpers) remain
+as top-level Python files. Use the canonical modules below; no legacy module
+aliases or root-package shim are provided. State-dict checkpoints remain
+supported; override `--data-root` or `data.root` if a saved data path has moved.
 
 | Module | Responsibility / reusable interface |
 | --- | --- |
@@ -24,8 +26,19 @@ provided. State-dict checkpoints still load; override `--data-root` or
 | `vision_traj/baselines/` | external VLA adapters and their shared evaluator |
 | `vision_traj/scripts/` | thin command entry points |
 
-Import from these canonical modules in new code. Flat old paths remain aliases
-for compatibility, not alternate implementations. `VisionTrajDataset.action_arrays(i)`
+Import implementations directly from these canonical modules, for example:
+
+```python
+from spvtp.vision_traj.data.dataset import VisionTrajDataset
+from spvtp.vision_traj.models.policy import VisionTrajPolicy, VisionTrajPolicyConfig
+from spvtp.vision_traj.evaluation.metrics import compute_batch_metrics
+```
+
+Use `spvtp train`, `spvtp eval`, and `spvtp rollout` for commands. Distributed
+training can launch `python -m spvtp.vision_traj.scripts.train` through Accelerate.
+Old flat-module import paths and module commands are intentionally unsupported.
+
+`VisionTrajDataset.action_arrays(i)`
 returns recorded history/targets without video decoding. New policies should
 reuse the same splits, sample noise and metric functions instead of duplicating
 the evaluation loop. Never add a process-global `sys.path` rewrite on import.
@@ -37,7 +50,8 @@ OMP_NUM_THREADS=2 python -m unittest discover -s spvtp/vision_traj/tests -q
 OMP_NUM_THREADS=2 python -m unittest discover -s tests -q
 ```
 
-Tests cover shapes/prompts, fixed splits, known metric values, noise invariance,
+Tests also guard the two-file top-level layout, canonical CLI targets, and
+removal of all 28 compatibility modules. They cover shapes/prompts, fixed splits, known metric values, noise invariance,
 cache/direct input equality, recording lifecycle, alignment/processing, and
 train/checkpoint/eval on generated videos. They need no pretrained download.
 See [GPU validation](gpu_validation.md) for real-data checks; CPU/synthetic tests

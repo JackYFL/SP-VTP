@@ -40,7 +40,7 @@ fi
 ckpt_dir="$(dirname "${CKPT}")"
 OUT_DIR="${OUT_DIR:-${ckpt_dir}/${SPLIT}_stitched_viz${scene_tag}}"
 
-python spvtp/vision_traj/vis_stitched_traj.py \
+python -m spvtp.vision_traj.scripts.vis_stitched_traj \
     --ckpt "${CKPT}" \
     --data-root "${DATA_ROOT}" \
     --annotations "${ANNOTATIONS}" \

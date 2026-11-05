@@ -1,5 +1,5 @@
 # Training config for spvtp.vision_traj
-# Override on CLI: python -m spvtp.vision_traj.train data.root=/path train.batch_size=16
+# Override on CLI: spvtp train data.root=/path train.batch_size=16
 
 data:
   root: spvtp/EgoSPT

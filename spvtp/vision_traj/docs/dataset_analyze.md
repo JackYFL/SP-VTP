@@ -2,7 +2,7 @@
 
 ## Collect, process, annotate
 
-The [quickstart](../../../README.md#collect-and-prepare) contains the commands.
+The [quickstart](../../../../README.md#quickstart) contains the commands.
 `RecordingSession` shares recording lifecycle/cleanup across camera backends.
 For iPhone + GoPro/OAK, camera 0 is the iPhone pose source and camera 1 supplies
 the RGB observations. Hardware SDKs are required only on the capture machine.

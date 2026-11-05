@@ -64,10 +64,10 @@ class WorkflowTests(unittest.TestCase):
             dynamic = make_dataset(cfg, changed, frame_cache_root=cache, dynamic_prompt_render=True)[0]
             self.assertTrue(torch.equal(direct['first_frame'], dynamic['first_frame']))
 
-    def test_flat_import_is_a_real_alias(self):
-        old = importlib.import_module('spvtp.vision_traj.policy')
-        new = importlib.import_module('spvtp.vision_traj.models.policy')
-        self.assertIs(old, new)
+    def test_public_policy_export_uses_canonical_implementation(self):
+        from spvtp.vision_traj import VisionTrajPolicy
+        implementation = importlib.import_module('spvtp.vision_traj.models.policy')
+        self.assertIs(VisionTrajPolicy, implementation.VisionTrajPolicy)
 
     def test_vla_evaluation_reuses_metrics_and_restores_rng(self):
         from types import SimpleNamespace

@@ -1,6 +1,6 @@
 # Documentation
 
-Start with the [project quickstart](../../../README.md). Commands below assume
+Start with the [project quickstart](../../../../README.md#quickstart). Commands below assume
 the project is installed and the working directory is its root.
 
 - [Data](dataset_analyze.md): collection, processing, annotations and frame alignment.
@@ -13,7 +13,8 @@ the project is installed and the working directory is its root.
 - [GPU validation](gpu_validation.md): migration checks and comparison with old logs.
 
 Defaults are defined only in [`configs/config.yaml`](../configs/config.yaml).
-Use the unified `spvtp` CLI for new runs; old flat imports remain aliases.
+Use the unified `spvtp` CLI for commands and canonical subpackages for imports;
+legacy flat-module entry points have been removed. See [module ownership](development.md).
 Historical experiment scripts describe their original settings, not necessarily
 the packaged defaults. No dataset, pretrained weights or experiment results
 are bundled with this repository.

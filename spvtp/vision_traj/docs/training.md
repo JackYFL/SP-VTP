@@ -1,6 +1,6 @@
 # Training
 
-Use the [quickstart](../../../README.md#train) for single/two-GPU commands.
+Use the [quickstart](../../../../README.md#training) for single/two-GPU commands.
 `spvtp train --config FILE key=value ...` loads YAML then applies dotted
 overrides. Without `--config`, it loads [`configs/config.yaml`](../configs/config.yaml).
 Use absolute data/output paths when launching outside the project root.

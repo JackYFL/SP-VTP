@@ -193,7 +193,7 @@ OMP_NUM_THREADS=2 python -m unittest discover -s spvtp/vision_traj/tests -q
 OMP_NUM_THREADS=2 python -m unittest discover -s tests -q
 ```
 
-`spvtp --help` lists commands; `spvtp COMMAND --help` shows their options. The root `pyproject.toml` is the single dependency specification. Flat aliases such as `spvtp.vision_traj.train` remain available in the new namespace. See the [documentation index](spvtp/vision_traj/docs/README.md) and [GPU validation notes](spvtp/vision_traj/docs/gpu_validation.md).
+`spvtp --help` lists commands; `spvtp COMMAND --help` shows their options. The root `pyproject.toml` is the single dependency specification. Import implementations from their canonical subpackages (`data`, `models`, `evaluation`, `analysis`, `baselines`, and `scripts`); legacy flat-module entry points have been removed. See the [documentation index](spvtp/vision_traj/docs/README.md) and [GPU validation notes](spvtp/vision_traj/docs/gpu_validation.md).
 
 </details>
 
