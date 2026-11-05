@@ -13,6 +13,10 @@ from spvtp.common.import_umi_source import get_umi_dir, get_umi_subprocess_env
 
 
 class NamespaceTests(unittest.TestCase):
+    def test_runtime_package_contains_no_automated_tests(self):
+        root = Path(spvtp.__file__).resolve().parent
+        self.assertEqual(list(root.glob('**/tests/test_*.py')), [])
+
     def test_vision_traj_top_level_contains_only_public_api_and_runtime(self):
         root = Path(spvtp.__file__).resolve().parent / 'vision_traj'
         self.assertEqual({path.name for path in root.glob('*.py')},

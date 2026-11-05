@@ -189,9 +189,12 @@ See the [experiment notes](spvtp/vision_traj/docs/experiment.md) for input modal
 <summary><strong>Development checks</strong></summary>
 
 ```bash
-OMP_NUM_THREADS=2 python -m unittest discover -s spvtp/vision_traj/tests -q
-OMP_NUM_THREADS=2 python -m unittest discover -s tests -q
+uv pip install -e '.[dev]'
+OMP_NUM_THREADS=2 python -m pytest -q
 ```
+
+All automated tests live in the root `tests/` directory. Pytest discovers both
+the unittest cases and visualization tests; runtime packages contain no tests.
 
 `spvtp --help` lists commands; `spvtp COMMAND --help` shows their options. The root `pyproject.toml` is the single dependency specification. Import implementations from their canonical subpackages (`data`, `models`, `evaluation`, `analysis`, `baselines`, and `scripts`); legacy flat-module entry points have been removed. See the [documentation index](spvtp/vision_traj/docs/README.md) and [GPU validation notes](spvtp/vision_traj/docs/gpu_validation.md).
 

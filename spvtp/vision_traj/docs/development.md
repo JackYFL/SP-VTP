@@ -46,14 +46,23 @@ the evaluation loop. Never add a process-global `sys.path` rewrite on import.
 ## Checks
 
 ```bash
-OMP_NUM_THREADS=2 python -m unittest discover -s spvtp/vision_traj/tests -q
-OMP_NUM_THREADS=2 python -m unittest discover -s tests -q
+uv pip install -e '.[dev]'
+OMP_NUM_THREADS=2 python -m pytest -q
 ```
 
+All automated tests live in the repository-root `tests/`, outside the runtime
+package. `pyproject.toml` limits pytest discovery to this directory, including
+both unittest cases and the visualization test. Run a subset with, for example,
+`python -m pytest tests/test_rollout.py -q`.
+
 Tests also guard the two-file top-level layout, canonical CLI targets, and
-removal of all 28 compatibility modules. They cover shapes/prompts, fixed splits, known metric values, noise invariance,
+removal of all 28 compatibility modules and in-package tests. They cover
+shapes/prompts, fixed splits, known metric values, noise invariance,
 cache/direct input equality, recording lifecycle, alignment/processing, and
 train/checkpoint/eval on generated videos. They need no pretrained download.
+The separate manual smoke script, `python -m tests.test_shapes`, uses a
+pretrained DINOv2 backbone and may download its weights; it is not collected
+by the automated suite.
 See [GPU validation](gpu_validation.md) for real-data checks; CPU/synthetic tests
 do not replace camera hardware or full-training validation.
 

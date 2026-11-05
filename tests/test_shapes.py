@@ -2,7 +2,7 @@
 
 Run::
 
-    python -m spvtp.vision_traj.tests.test_shapes
+    python -m tests.test_shapes
 """
 
 from __future__ import annotations

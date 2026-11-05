@@ -54,6 +54,9 @@ tracking = ["wandb>=0.15"]
 iphone = ["record3d"]
 vla = ["transformers", "safetensors", "sentencepiece", "peft"]
 
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
 [tool.setuptools.package-data]
 "spvtp.vision_traj.configs" = ["*.yaml"]
 "spvtp.demonstration_processing" = ["config/*.yaml", "calibration/*.yaml", "calibration/*.json"]
