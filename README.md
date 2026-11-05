@@ -212,3 +212,9 @@ If this work is useful for your research, please cite:
   year={2027}
 }
 ```
+
+## License
+
+Project-authored code is released under the [MIT License](LICENSE).
+Third-party code, pretrained models, and datasets remain subject to their
+respective licenses and terms.

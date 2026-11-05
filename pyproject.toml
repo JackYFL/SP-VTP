@@ -6,6 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "sp-vtp"
 version = "0.2.0"
 description = "Vision-conditioned trajectory prediction for egocentric manipulation data."
+license = {file = "LICENSE"}
 requires-python = ">=3.10"
 dependencies = [
     "torch>=2.1",
